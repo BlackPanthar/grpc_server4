@@ -1,0 +1,8 @@
+grpc:
+  port: 9090
+  target: "localhost:9090"
+
+
+#grpc:
+ # port: "50051"
+
