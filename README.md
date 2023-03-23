@@ -12,7 +12,7 @@ go build
 ```
 
 ### tests
-to use the client
+client
 ```
 cd client
 go build
@@ -20,12 +20,12 @@ go build
 
 where [Option] can be GetNodeInfo, GetSyncing, GetLatestBlock, GetBlockByHeight [Height] e.g height: 8700000, GetLatestValidatorSet,GetValidatorSetByHeight [Height] eg height: 8658239
 ```
-to use test grpc file
+test grpc file
 ```
 cd test
 go test
 ```
-to use test state_tracker
+test state_tracker
 ```
 cd state_tracker
 go test
