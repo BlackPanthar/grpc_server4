@@ -4,7 +4,7 @@ grpc server
 ### first download packages
 use```go mod tidy``` 
 
-### second build and start the grpc server
+### start the grpc server
 ```
 cd server
 go build
