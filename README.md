@@ -1,5 +1,9 @@
+# grpc_server4
+grpc server
+
+
 # how to use 
-### first you need to down load the packages
+### first you need to download the packages
 use```go mod tidy``` 
 
 ### second you need to build the grpc server and start it
@@ -29,5 +33,4 @@ cd state_tracker
 go test
 ```
 
-# grpc_server4
-grpc server
+
