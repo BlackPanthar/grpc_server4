@@ -5,10 +5,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"google.golang.org/grpc"
 	"grpc_server4/types"
 	"log"
+	"os"
 	"time"
+
+	"google.golang.org/grpc"
 )
 
 type StateTrackerStruct struct {
@@ -25,7 +27,7 @@ func StateTracker() {
 	ctx := context.Background()
 	grpcConn, err := grpc.Dial(
 		GRPC_SERVER_ADDRESS, // your gRPC server address.
-		grpc.WithInsecure(), // The SDK doesn't support any transport security mechanism.
+		grpc.WithInsecure(),
 	)
 	if err != nil {
 		log.Fatalf("dial err: %v", err)
@@ -48,7 +50,7 @@ func StateTracker() {
 		Hash:   hex.EncodeToString(resp.BlockId.Hash),
 	})
 	time.Sleep(30 * time.Second)
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 5; i++ {
 		block, err := c.GetBlockByHeight(ctx, &types.GetBlockByHeightRequest{Height: height})
 		if err != nil {
 			log.Fatalf("GetBlockByHeight: %v", err)
@@ -56,9 +58,20 @@ func StateTracker() {
 		height++
 		ans.TestResult = append(ans.TestResult, TestResult{
 			Height: block.Block.Header.Height,
-			Hash:   hex.EncodeToString(resp.BlockId.Hash),
+			Hash:   hex.EncodeToString(block.BlockId.Hash),
 		})
 	}
 	jsonStr, err := json.Marshal(ans)
 	fmt.Println(string(jsonStr))
+	filePtr, err := os.Create("info.json")
+	if err != nil {
+		fmt.Println("create file failed! err:", err.Error())
+		return
+	}
+	defer filePtr.Close()
+	encoder := json.NewEncoder(filePtr)
+	err = encoder.Encode(ans)
+	if err != nil {
+		fmt.Println("encode err:", err.Error())
+	}
 }

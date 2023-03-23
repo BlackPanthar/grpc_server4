@@ -18,7 +18,7 @@ const (
 func TestGrpc(t *testing.T) {
 	grpcConn, err := grpc.Dial(
 		GRPC_SERVER_ADDRESS, // your gRPC server address.
-		grpc.WithInsecure(), // The SDK doesn't support any transport security mechanism.
+		grpc.WithInsecure(), 
 	)
 	if err != nil {
 		log.Fatalf("dial err: %v", err)
