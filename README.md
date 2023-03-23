@@ -1,19 +1,17 @@
 # grpc_server4
 grpc server
 
-
-# how to use 
-### first you need to download the packages
+### first download packages
 use```go mod tidy``` 
 
-### second you need to build the grpc server and start it
+### second build and start the grpc server
 ```
 cd server
 go build
 ./server
 ```
 
-### and then you can start your test
+### tests
 to use the client
 ```
 cd client
