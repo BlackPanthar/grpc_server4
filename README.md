@@ -11,7 +11,7 @@ go build
 ./server
 ```
 
-### tests
+### function check
 client
 ```
 cd client
