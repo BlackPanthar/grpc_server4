@@ -1,8 +1,7 @@
 ## grpc_server
-grpc server
 
-### first download packages
-use```go mod tidy``` 
+first download packages
+use ```go mod tidy``` 
 
 ### start the grpc server
 ```
@@ -12,7 +11,7 @@ go build
 ```
 
 ### function check
-client
+Client Function Checks
 ```
 cd client
 go build
@@ -20,20 +19,20 @@ go build
 
 where [Option] can be GetNodeInfo, GetSyncing, GetLatestBlock, GetBlockByHeight [Height] e.g height: 8700000, GetLatestValidatorSet,GetValidatorSetByHeight [Height] eg height: 8658239
 ```
-test grpc file
+Test grpc file
 ```
 cd test
 go test
 ```
-test state_tracker
+Test state_tracker
 ```
 cd state_tracker
 go test
 ```
 
 Few Notes:
-
-My goal is simply to build a GRpc client/server application in go that can retrieve the same result as a URL like this https://rpc.osmosis.zone/abci_ and I followed the following steps:
+irect 
+My goal here was simply to build a Grpc client/server application in go that can retrieve the same result as a direct URL like this https://rpc.osmosis.zone/abci_ and I followed the following steps:
 
 1. Define the protocol buffer messages and services for the Tendermint RPC API. The Tendermint RPC API specification can be found in the rpc.proto file of the Tendermint repository. The messages and services in this file are used to interact with the Tendermint node via gRPC.
 
