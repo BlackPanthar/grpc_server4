@@ -31,9 +31,9 @@ cd state_tracker
 go test
 ```
 
-Development Description
-```
-My goal is simply to build a Go client/server application that can retrieve the same result as a URL like this https://rpc.osmosis.zone/abci_and I followed the following steps:
+Few Notes:
+
+My goal is simply to build a GRpc client/server application in go that can retrieve the same result as a URL like this https://rpc.osmosis.zone/abci_and I followed the following steps:
 
 1. Define the protocol buffer messages and services for the Tendermint RPC API. The Tendermint RPC API specification can be found in the rpc.proto file of the Tendermint repository. The messages and services in this file are used to interact with the Tendermint node via gRPC.
 
@@ -58,5 +58,5 @@ rpc.proto
 
 5. Run the server in one terminal window, and then run the client in another terminal window. The client should be able to connect to the server and invoke the Tendermint RPC API methods, which should return the same results as the example URL for example https://rpc.osmosis.zone/abci_info (changing formats may result in an interim check that both calls are not empty with no errors, as the test, we'll see)
 
-```
+
 PS: info.json is the state tracker json and is generated in the state_tracker folder
