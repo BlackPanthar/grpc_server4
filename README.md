@@ -1,4 +1,4 @@
-# grpc_server
+## grpc_server
 grpc server
 
 ### first download packages
@@ -33,7 +33,7 @@ go test
 
 Few Notes:
 
-My goal is simply to build a GRpc client/server application in go that can retrieve the same result as a URL like this https://rpc.osmosis.zone/abci_and I followed the following steps:
+My goal is simply to build a GRpc client/server application in go that can retrieve the same result as a URL like this https://rpc.osmosis.zone/abci_ and I followed the following steps:
 
 1. Define the protocol buffer messages and services for the Tendermint RPC API. The Tendermint RPC API specification can be found in the rpc.proto file of the Tendermint repository. The messages and services in this file are used to interact with the Tendermint node via gRPC.
 
