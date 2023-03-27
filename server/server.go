@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"grpc_server4/types"
+	types "grpc_server4/proto/generated"
+	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -19,6 +22,7 @@ import (
 )
 
 const GRPC_SERVER_ADDRESS = "grpc.osmosis.zone:9090"
+
 const CHAIN_ID = "osmosis-1"
 const NODE_URL = "https://osmosis-mainnet-rpc.allthatnode.com:26657"
 
@@ -223,23 +227,87 @@ func (s *server) GetValidatorSetByHeight(ctx context.Context, req *types.GetVali
 		Pagination:  valSet.Pagination,
 	}, nil
 }
+func (s *server) GetABCIInfo(ctx context.Context, req *types.GetABCIInfoRequest) (*types.GetABCIInfoResponse, error) {
+	resp, err := http.Get("https://rpc.osmosis.zone/abci_info")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var jsonResp map[string]interface{}
+	err = json.NewDecoder(resp.Body).Decode(&jsonResp)
+	if err != nil {
+		return nil, err
+	}
+	jsonBytes, err := json.Marshal(jsonResp)
+	if err != nil {
+		return nil, err
+	}
+	jsonStr := string(jsonBytes)
+
+	return &types.GetABCIInfoResponse{
+		Jsonrpc: jsonStr,
+		Id:      int32(jsonResp["id"].(float64)),
+		Response: &types.ABCIResponse{
+			Data:       jsonStr,
+			Version:    jsonResp["result"].(map[string]interface{})["response"].(map[string]interface{})["version"].(string),
+			AppVersion: jsonResp["result"].(map[string]interface{})["response"].(map[string]interface{})["app_version"].(string),
+		},
+	}, nil
+}
+
+func (s *server) GetStatusInfo(ctx context.Context, req *types.GetStatusInfoRequest) (*types.GetStatusInfoResponse, error) {
+	client := &http.Client{}
+	reqDirect, err := http.NewRequest("GET", "https://rpc.osmosis.zone/status", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(reqDirect)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonResp, err := json.Marshal(result["result"])
+	if err != nil {
+		return nil, err
+	}
+
+	responseStr := string(jsonResp)
+	fmt.Println(responseStr)
+
+	return &types.GetStatusInfoResponse{
+		ResponseString: responseStr,
+	}, nil
+}
 
 func Serve() {
-
-	listen, err := net.Listen("tcp", "localhost:9090")
+	// Start grpc server
+	grpcListener, err := net.Listen("tcp", "localhost:9090")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	gs := grpc.NewServer()
-	reflection.Register(gs)
-	types.RegisterGrpcQueryServiceServer(gs, &server{})
+	grpcServer := grpc.NewServer()
+	types.RegisterGrpcQueryServiceServer(grpcServer, &server{})
+	reflection.Register(grpcServer)
 	fmt.Println("grpc server is started")
-	err = gs.Serve(listen)
+	err = grpcServer.Serve(grpcListener)
 	if err != nil {
 		fmt.Printf("failed to serve: %v", err)
 		return
 	}
-	log.Println("OsmosisServiceServer is closed!")
 }
 
 func main() {

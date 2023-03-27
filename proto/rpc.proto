@@ -1,18 +1,29 @@
 syntax = "proto3";
-package v1beta1;
 
-import "google/protobuf/any.proto";
-import "google/api/annotations.proto";
+package proto;
+
 import "tendermint/p2p/types.proto";
 import "tendermint/types/block.proto";
 import "tendermint/types/types.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
 
-option go_package = "../types";
+option go_package = "../proto/generated";
 
 // Service defines the gRPC querier service for tendermint queries.
+
 service GrpcQueryService {
-  // GetNodeInfo queries the current node info.
+
+     rpc GetABCIInfo (GetABCIInfoRequest) returns (GetABCIInfoResponse) {
+        option (google.api.http).get = "/abci_info";
+    }
+  // Returns status information about the node
+    rpc GetStatusInfo (GetStatusInfoRequest) returns (GetStatusInfoResponse) {
+        option (google.api.http).get = "/status";
+        
+    }
+  // GetNodeInfo queries the current node info
   rpc GetNodeInfo(GetNodeInfoRequest) returns (GetNodeInfoResponse) {
     option (google.api.http).get = "/node_info";
   }
@@ -139,3 +150,29 @@ message Module {
   // checksum
   string sum = 3;
 }
+
+// GetABCIInfoRequest is the request type for the Query/GetABCIInfo RPC method.
+message GetABCIInfoRequest {}
+
+message GetABCIInfoResponse {
+  string jsonrpc = 1;
+  int32 id = 2;
+  ABCIResponse response = 3;
+}
+
+message ABCIResponse {
+  string data = 1;
+  string version = 2;
+  string app_version = 3;
+}
+
+message GetStatusInfoRequest {}
+
+message GetStatusInfoResponse {
+ string response_string = 1;
+}
+
+
+
+
+
