@@ -36,7 +36,6 @@ func TestGrpc(t *testing.T) {
 
 	// basic Comparison of result atributes with Osmosis direct call attributes
 
-	// Basic comparison of result attributes with Osmosis direct call attributes
 	abciInfo, err := c.GetABCIInfo(ctx, &types.GetABCIInfoRequest{})
 	if err != nil {
 		t.Fatalf("GetABCIInfo err: %v", err)
@@ -76,7 +75,9 @@ func TestGrpc(t *testing.T) {
 	if string(abciDirectBytes) == "" || string(abciBytes) == "" {
 		t.Errorf("One or both GetABCIInfo results are empty: server=%v, direct=%v", string(abciBytes), string(abciDirectBytes))
 	}
-
+	if string(abciDirectBytes) == string(abciBytes) {
+		fmt.Printf("ABCIInfo grpc response and server response equal: their formats are exactly same/equal %s %s"+string(abciDirectBytes), string(abciBytes))
+	}
 	statusInfo, err := c.GetStatusInfo(ctx, &types.GetStatusInfoRequest{})
 	if err != nil {
 		t.Fatalf("GetStatusInfo err: %v", err)
@@ -91,6 +92,10 @@ func TestGrpc(t *testing.T) {
 	// Compare server results with direct results
 	if statusInfoDirect.ResponseString == "" || statusInfo.ResponseString == "" {
 		t.Errorf("One or both GetStatusInfo results are empty: server=%v, direct=%v", statusInfo.ResponseString, statusInfoDirect.ResponseString)
+	}
+
+	if statusInfoDirect.ResponseString == statusInfo.ResponseString {
+		fmt.Printf("StatusInfo grpc response and server response equal: their formats are exactly same/equal %s %s"+statusInfo.ResponseString, statusInfoDirect.ResponseString)
 	}
 
 	// Basic function tests to check errors - no comparison with Osmosis in this section

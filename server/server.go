@@ -21,13 +21,19 @@ import (
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
+// The address of the gRPC server to connect to
 const GRPC_SERVER_ADDRESS = "grpc.osmosis.zone:9090"
 
+// The chain ID of the Osmosis network
 const CHAIN_ID = "osmosis-1"
+
+// The URL of the Osmosis node to connect to
 const NODE_URL = "https://osmosis-mainnet-rpc.allthatnode.com:26657"
 
+// Ccontext is a global client context object initialized with the chain ID and node URI
 var Ccontext = client.Context{}.WithChainID(CHAIN_ID)
 
+// InitCcontext initializes the Ccontext object with the necessary parameters for communicating with the Osmosis node
 func InitCcontext() {
 	encodingConfig := app.MakeEncodingConfig()
 	Ccontext = Ccontext.WithCodec(encodingConfig.Marshaler).
@@ -43,11 +49,13 @@ func InitCcontext() {
 	conf.SetBech32PrefixForAccount("osmo", "osmopub")
 }
 
+// server is a struct representing the gRPC server and its methods
 type server struct {
 	ctx context.Context
 	types.UnimplementedGrpcQueryServiceServer
 }
 
+// GetNodeInfo returns information about the connected node
 func (s *server) GetNodeInfo(ctx context.Context, req *types.GetNodeInfoRequest) (*types.GetNodeInfoResponse, error) {
 	grpcConn, _ := grpc.Dial(
 		GRPC_SERVER_ADDRESS, // your gRPC server address.
